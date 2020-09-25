@@ -43,7 +43,8 @@ d3.csv("assets/data/data.csv").then((data) => {
 
     //moving chart by the margin
     var chartGroup = svg.append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+        .attr("transform", `translate(${margin.left}, ${margin.top})`)
+        .attr("id", "chart");
 
     chartGroup.append("g")
         .attr("transform", `translate(0, ${chartHeight})`)
@@ -52,15 +53,24 @@ d3.csv("assets/data/data.csv").then((data) => {
     chartGroup.append("g")
         .call(leftAxis);
 
-    var circles = chartGroup.selectAll("circle")
+    var elem = chartGroup.selectAll("g circle")
         .data(data)
         .enter()
-        .append("circle")
+        .append("g");
+
+    var circles = elem.append("circle")
         .attr("cx", d => xScale(d.poverty))
         .attr("cy", d => yScale(d.healthcare))
         .attr("r", "15")
         .attr("fill", "pink")
+        .attr("stroke", "red")
         .attr("opacity", ".5");
+    
+    elem.append("text")
+        .text(d => d.abbr)
+        .attr("dx", d => xScale(d.poverty) - 10)
+        .attr("dy", d => yScale(d.healthcare) + 8);
+
 
     var toolTip = d3.tip()
         .attr("class", "tooltip")
